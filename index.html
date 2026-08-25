@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LookScore — Personal Style &amp; Grooming Consultation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark"></span>LookScore</div>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home" class="screen">
+    <div class="hero">
+      <p class="eyebrow">Personal presentation consultation</p>
+      <h1>Practical notes on your hair, grooming, and style.</h1>
+      <p class="lede">Answer a few short questions and upload a photo for an objective lighting and clarity check. Receive a written consultation with specific, actionable recommendations — not a numeric rating.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="ctaAnalyze">Begin Consultation</button>
+        <button class="btn btn-ghost" id="ctaHow">How It Works</button>
+      </div>
+      <div class="trust-strip">
+        <div class="trust-item"><span class="trust-dot"></span>No numeric scoring of any kind</div>
+        <div class="trust-item"><span class="trust-dot"></span>Processed entirely in your browser</div>
+        <div class="trust-item"><span class="trust-dot"></span>Nothing is uploaded or stored</div>
+      </div>
+    </div>
+
+    <div id="howItWorks" class="hidden how-block">
+      <h2 class="section-title">How this works</h2>
+      <p class="section-sub">In the interest of transparency: this is not an AI model reading your photograph. Here is exactly what happens.</p>
+      <div class="steps">
+        <div class="step"><div class="step-tag">01</div><div><h3>A short questionnaire</h3><p>Three questions about your hair length, hair texture, and the style you're aiming for. This is the primary input.</p></div></div>
+        <div class="step"><div class="step-tag">02</div><div><h3>An optional photo check</h3><p>Your browser measures your photo's brightness, sharpness, and resolution directly — genuine calculation, performed on your device.</p></div></div>
+        <div class="step"><div class="step-tag">03</div><div><h3>A matched consultation</h3><p>Your answers are matched against a curated set of written consultations. This is the closest available match, not a bespoke reading of your photo.</p></div></div>
+        <div class="step"><div class="step-tag">04</div><div><h3>Your photo's real findings, included</h3><p>If your photo was dim or unclear, that observation is genuinely drawn from your image and included in your notes.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UPLOAD ============ -->
+  <section id="screen-upload" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; Back</button>
+    <p class="eyebrow">Step 1 of 2</p>
+    <h2 class="section-title" style="margin-bottom:6px;">Upload a photograph</h2>
+    <p class="section-sub">Used only for a genuine lighting and sharpness assessment — not analyzed for hair, skin, or clothing. JPG, PNG, or WebP, up to 10MB.</p>
+
+    <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a photo">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+      <h3>Drag a photo here</h3>
+      <p>or choose an option below</p>
+      <div class="upload-actions">
+        <button class="btn btn-primary btn-sm" id="btnChooseFile">Choose from device</button>
+        <button class="btn btn-ghost btn-sm" id="btnCamera">Use camera</button>
+      </div>
+      <p class="filetypes">JPG · JPEG · PNG · WEBP — MAX 10MB</p>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" class="hidden">
+    <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden">
+
+    <div id="uploadError" class="banner banner-warn hidden" style="margin-top:16px;"></div>
+
+    <div id="previewBlock" class="card preview-card hidden" style="margin-top:20px;">
+      <div class="preview-img-wrap"><img id="previewImg" alt="Your uploaded photo preview"></div>
+
+      <div id="qualityChecking" style="text-align:center;padding:8px 0;">
+        <p class="checking-text">Checking your photo…</p>
+      </div>
+
+      <ul class="quality-list hidden" id="qualityList"></ul>
+      <div id="qualityBanner" class="banner hidden"></div>
+
+      <div class="preview-btns">
+        <button class="btn btn-ghost btn-sm" id="btnReplace">Replace</button>
+        <button class="btn btn-ghost btn-sm" id="btnRemove">Remove</button>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" id="btnSkipPhoto">Skip photo, use my answers only</button>
+      <button class="btn btn-primary btn-sm" id="btnToQuiz" style="margin-left:auto;">Continue to questions</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="screen-quiz" class="screen hidden">
+    <button class="back-link" data-back="screen-upload">&larr; Back</button>
+    <p class="eyebrow">Step 2 of 2</p>
+    <h2 class="section-title" style="margin-bottom:6px;">A few short questions</h2>
+    <p class="section-sub">These answers determine your consultation.</p>
+
+    <div class="quiz-block">
+      <h3 class="quiz-q">What is your hair length?</h3>
+      <div class="quiz-options" data-question="hair_length">
+        <button class="quiz-option" data-value="short">Short</button>
+        <button class="quiz-option" data-value="medium">Medium</button>
+        <button class="quiz-option" data-value="long">Long</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <h3 class="quiz-q">What is your hair texture?</h3>
+      <div class="quiz-options" data-question="hair_texture">
+        <button class="quiz-option" data-value="straight">Straight</button>
+        <button class="quiz-option" data-value="curly">Curly / Coily</button>
+        <button class="quiz-option" data-value="textured">Textured / Wavy</button>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <h3 class="quiz-q">What style are you aiming for?</h3>
+      <div class="quiz-options" data-question="style_context">
+        <button class="quiz-option" data-value="casual">Casual / Everyday</button>
+        <button class="quiz-option" data-value="formal">Formal / Polished</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btnGetNotes" style="margin-top:28px;" disabled>Generate My Consultation</button>
+  </section>
+
+  <!-- ============ ANALYZING ============ -->
+  <section id="screen-analyzing" class="screen hidden">
+    <div class="analyzing-wrap">
+      <div class="analyzing-photo hidden" id="analyzingPhotoWrap"><img id="analyzingImg" alt=""></div>
+      <p class="eyebrow" style="justify-content:center;display:flex;">Preparing your consultation</p>
+      <ul class="stage-list" id="stageList">
+        <li data-stage="0"><span class="mark">·</span> Reviewing your answers</li>
+        <li data-stage="1"><span class="mark">·</span> Assessing photo lighting &amp; sharpness</li>
+        <li data-stage="2"><span class="mark">·</span> Matching your closest profile</li>
+        <li data-stage="3"><span class="mark">·</span> Incorporating your photo's findings</li>
+        <li data-stage="4"><span class="mark">·</span> Finalizing your recommendations</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="screen-results" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; Start over</button>
+
+    <div class="report-head">
+      <p class="eyebrow">Your consultation</p>
+      <h2>Here is what we found, and what to do next.</h2>
+      <p id="reportIntro">These notes are matched from your answers, not a scan of your face. Nothing here is a numeric score or a judgment of appearance.</p>
+    </div>
+
+    <div class="banner banner-info" style="margin-bottom:8px;">
+      <span>This consultation is matched from your questionnaire answers, combined with a genuine assessment of your photo's lighting and sharpness. It does not use AI to interpret your hair, skin, or clothing from the image itself.</span>
+    </div>
+
+    <h3 class="section-title">Top priorities</h3>
+    <p class="section-sub">Ordered by impact relative to effort required.</p>
+    <div class="priority-stack" id="priorityStack"></div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Category notes</h3>
+      <p class="section-sub">What's working well, and what's worth adjusting, by area.</p>
+      <div id="categoryCards"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Hairstyle suggestions</h3>
+      <p class="section-sub">Matched to your stated hair length and texture.</p>
+      <div class="hair-scroll" id="hairScroll"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Style notes</h3>
+      <p class="section-sub" id="styleSectionSub">What to keep, what to adjust, and one direction to try.</p>
+      <div class="style-grid" id="styleGrid"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Everyday grooming</h3>
+      <div class="cat-card" id="groomingGuideCard"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">A simple skincare routine</h3>
+      <div class="routine-grid" id="skincareGrid"></div>
+      <div class="disclaimer">This is general starter guidance, not derived from an assessment of your skin. For persistent, painful, or concerning skin conditions, please consult a dermatologist or physician.</div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Photographing yourself well</h3>
+      <ul class="photo-tips-list" id="photoTipsList"></ul>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">Your plan</h3>
+      <p class="section-sub">The same priorities, arranged on a timeline. Checked items remain on this device only.</p>
+      <div class="plan-tabs">
+        <button class="plan-tab active" data-plan="quick">Quick wins</button>
+        <button class="plan-tab" data-plan="p7">7 days</button>
+        <button class="plan-tab" data-plan="p30">30 days</button>
+        <button class="plan-tab" data-plan="p90">90 days</button>
+      </div>
+      <div class="card plan-card">
+        <div class="plan-panel active" id="plan-quick"></div>
+        <div class="plan-panel" id="plan-p7"></div>
+        <div class="plan-panel" id="plan-p30"></div>
+        <div class="plan-panel" id="plan-p90"></div>
+      </div>
+    </div>
+
+    <div class="disclaimer" style="margin-top:32px;">
+      LookScore matches your answers to a curated set of written consultations and incorporates a genuine assessment of your photo's lighting and sharpness. It is not a substitute for consultation with a professional barber, stylist, or dermatologist, and does not measure attractiveness or personal worth.
+    </div>
+
+    <div style="margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" id="btnNewPhoto">Start over</button>
+      <button class="btn btn-ghost btn-sm" id="btnDeleteFromResults">Delete my data</button>
+    </div>
+  </section>
+
+  <!-- ============ PRIVACY ============ -->
+  <section id="screen-privacy" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; Back</button>
+    <h2 class="section-title">Your privacy</h2>
+    <ul class="privacy-list">
+      <li><span class="mark">✓</span> Nothing is transmitted anywhere. Your photo and answers are processed entirely within your browser.</li>
+      <li><span class="mark">✓</span> There is no server, no API, and no third party with access to your photo.</li>
+      <li><span class="mark">✓</span> Your photo and results exist only in this browser tab's memory — closing or reloading the page clears them.</li>
+      <li><span class="mark">✓</span> Nothing here is sold or used for advertising.</li>
+      <li><span class="mark">✓</span> You may delete your current photo and results at any time, below.</li>
+    </ul>
+    <button class="btn btn-primary" id="btnDeleteAll">Delete My Data Now</button>
+  </section>
+
+</main>
+
+<footer>
+  <p>LookScore matches your answers to pre-written style and grooming guidance. It does not use AI image analysis, and does not measure attractiveness or personal worth.</p>
+  <button class="back-link" id="footerPrivacyLink" style="margin:0 auto;">Privacy &amp; data</button>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="templates.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
