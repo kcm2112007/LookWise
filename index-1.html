@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LookScore — your fit &amp; face, upgraded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- decorative blobs, purely visual -->
+<div class="blob blob-lime" aria-hidden="true"></div>
+<div class="blob blob-pink" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark">✦</span>LookScore</div>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle light mode" title="Toggle light mode">
+      <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home" class="screen">
+    <div class="hero">
+      <p class="sticker sticker-lime">no numeric rating · ever</p>
+      <h1>get real notes on your <span class="hl">hair</span>, <span class="hl hl-pink">fit</span> &amp; <span class="hl hl-violet">grooming</span>.</h1>
+      <p class="lede">Drop one clear pic. Get specific, do-this-today fixes — written like your most stylish friend, not a scoreboard.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="ctaAnalyze">start my glow-up plan</button>
+        <button class="btn btn-ghost" id="ctaHow">how it works</button>
+      </div>
+      <div class="trust-strip">
+        <div class="trust-chip">🚫 zero numeric scores</div>
+        <div class="trust-chip">🔒 pic deleted after this session</div>
+        <div class="trust-chip">🙅 never judges race, ethnicity, disability</div>
+      </div>
+    </div>
+
+    <div id="howItWorks" class="hidden how-block">
+      <h2 class="section-title">how it works</h2>
+      <div class="steps">
+        <div class="step"><div class="step-tag">01</div><div><h3>upload one clear pic</h3><p>good light, face forward. we auto-check quality before doing anything else.</p></div></div>
+        <div class="step"><div class="step-tag">02</div><div><h3>claude actually looks at it</h3><p>grooming, hair, visible skin, fit, photo quality. that's it — nothing sketchy.</p></div></div>
+        <div class="step"><div class="step-tag">03</div><div><h3>you get real notes</h3><p>what's working, what to tweak, and your top 3–5 moves. no score, no vibes-based nonsense.</p></div></div>
+        <div class="step"><div class="step-tag">04</div><div><h3>delete it whenever</h3><p>one tap wipes your pic and results. it's your data.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UPLOAD ============ -->
+  <section id="screen-upload" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; back</button>
+    <p class="sticker sticker-violet">step 1/2</p>
+    <h2 class="section-title" style="margin-bottom:6px;">drop your pic</h2>
+    <p class="section-sub">one clear, forward-facing photo. jpg, png or webp, up to 10MB.</p>
+
+    <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a photo">
+      <div class="dz-icon">📸</div>
+      <h3>drag it here</h3>
+      <p>or tap an option below</p>
+      <div class="upload-actions">
+        <button class="btn btn-primary btn-sm" id="btnChooseFile">choose from device</button>
+        <button class="btn btn-ghost btn-sm" id="btnCamera">use camera</button>
+      </div>
+      <p class="filetypes">JPG · JPEG · PNG · WEBP — MAX 10MB</p>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" class="hidden">
+    <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden">
+
+    <div id="uploadError" class="banner banner-warn hidden" style="margin-top:16px;"></div>
+
+    <!-- preview + quality check -->
+    <div id="previewBlock" class="card preview-card hidden" style="margin-top:20px;">
+      <div class="preview-img-wrap"><img id="previewImg" alt="Your uploaded photo preview"></div>
+
+      <div id="qualityChecking" style="text-align:center;padding:8px 0;">
+        <p class="checking-text">checking your pic<span class="dotdotdot"><span>.</span><span>.</span><span>.</span></span></p>
+      </div>
+
+      <ul class="quality-list hidden" id="qualityList"></ul>
+
+      <div id="qualityBanner" class="banner hidden"></div>
+
+      <div class="preview-btns">
+        <button class="btn btn-ghost btn-sm" id="btnReplace">replace</button>
+        <button class="btn btn-ghost btn-sm" id="btnRemove">remove</button>
+        <button class="btn btn-primary btn-sm" id="btnAnalyzeGo" style="margin-left:auto;" disabled>analyze my pic</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANALYZING ============ -->
+  <section id="screen-analyzing" class="screen hidden">
+    <div class="analyzing-wrap">
+      <div class="analyzing-photo"><img id="analyzingImg" alt=""></div>
+      <p class="sticker sticker-pink" style="margin:0 auto 22px;display:inline-block;">cooking your notes</p>
+      <ul class="stage-list" id="stageList">
+        <li data-stage="0"><span class="mark">·</span> checking image quality</li>
+        <li data-stage="1"><span class="mark">·</span> reading grooming presentation</li>
+        <li data-stage="2"><span class="mark">·</span> reading hairstyle</li>
+        <li data-stage="3"><span class="mark">·</span> reading skin presentation</li>
+        <li data-stage="4"><span class="mark">·</span> reading style &amp; photo quality</li>
+        <li data-stage="5"><span class="mark">·</span> writing your recommendations</li>
+      </ul>
+      <div id="analyzeErrorBlock" class="hidden" style="margin-top:26px;max-width:400px;margin-left:auto;margin-right:auto;">
+        <div class="banner banner-warn" id="analyzeErrorMsg"></div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+          <button class="btn btn-primary btn-sm" id="btnRetryAnalyze">try again</button>
+          <button class="btn btn-ghost btn-sm" id="btnBackFromError">change photo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="screen-results" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; start over</button>
+
+    <div class="report-head">
+      <p class="sticker sticker-lime">your notes are ready</p>
+      <h2>here's the tea — and what to do about it.</h2>
+      <p id="reportIntro">these notes are about this one photo, not your worth or your face overall. no scores, just moves.</p>
+    </div>
+
+    <h3 class="section-title">top priorities</h3>
+    <p class="section-sub">ranked biggest glow-up for least effort, first.</p>
+    <div class="priority-stack" id="priorityStack"></div>
+
+    <div class="block-gap">
+      <h3 class="section-title">category notes</h3>
+      <p class="section-sub">what's working, what to tweak — by area.</p>
+      <div id="categoryCards" class="bento"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">hairstyle ideas</h3>
+      <p class="section-sub">based on what's visible. swipe →</p>
+      <div class="hair-scroll" id="hairScroll"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">style notes</h3>
+      <p class="section-sub" id="styleSectionSub">keep, tweak, and one fit to try next.</p>
+      <div class="style-grid" id="styleGrid"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">everyday grooming</h3>
+      <div class="cat-card" id="groomingGuideCard"></div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">a simple skincare routine</h3>
+      <div class="routine-grid" id="skincareGrid"></div>
+      <div class="disclaimer">photo analysis can't diagnose skin conditions. persistent, painful, or concerning skin stuff — see a dermatologist or doctor, not an app.</div>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">look better in photos</h3>
+      <ul class="photo-tips-list" id="photoTipsList"></ul>
+    </div>
+
+    <div class="block-gap">
+      <h3 class="section-title">your plan</h3>
+      <p class="section-sub">same priorities, on a timeline. check stuff off — stays on your device only.</p>
+      <div class="plan-tabs">
+        <button class="plan-tab active" data-plan="quick">quick wins</button>
+        <button class="plan-tab" data-plan="p7">7 days</button>
+        <button class="plan-tab" data-plan="p30">30 days</button>
+        <button class="plan-tab" data-plan="p90">90 days</button>
+      </div>
+      <div class="card plan-card">
+        <div class="plan-panel active" id="plan-quick"></div>
+        <div class="plan-panel" id="plan-p7"></div>
+        <div class="plan-panel" id="plan-p30"></div>
+        <div class="plan-panel" id="plan-p90"></div>
+      </div>
+    </div>
+
+    <div class="disclaimer" style="margin-top:30px;">
+      this consultation is generated by AI reviewing one photo. it's a starting point for practical grooming and style choices — not a measure of attractiveness, worth, or a substitute for a real barber, stylist, or dermatologist.
+    </div>
+
+    <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" id="btnNewPhoto">analyze another pic</button>
+      <button class="btn btn-ghost btn-sm" id="btnDeleteFromResults">delete this photo &amp; data</button>
+    </div>
+  </section>
+
+  <!-- ============ PRIVACY ============ -->
+  <section id="screen-privacy" class="screen hidden">
+    <button class="back-link" data-back="screen-home">&larr; back</button>
+    <h2 class="section-title">your privacy</h2>
+    <ul class="privacy-list">
+      <li><span class="mark">✓</span> your photo goes straight to Claude for analysis — never saved on a LookScore server.</li>
+      <li><span class="mark">✓</span> your photo and results live only in this browser tab's memory. close or reload, it's gone.</li>
+      <li><span class="mark">✓</span> never shown publicly or shared with anyone else.</li>
+      <li><span class="mark">✓</span> nothing here is sold or used for ads.</li>
+      <li><span class="mark">✓</span> you can delete your current photo and results any time, below.</li>
+    </ul>
+    <button class="btn btn-primary" id="btnDeleteAll">delete my data now</button>
+  </section>
+
+</main>
+
+<footer>
+  <p>LookScore is a practical style &amp; grooming consultation tool. it does not measure attractiveness or human worth.</p>
+  <button class="back-link" id="footerPrivacyLink" style="margin:0 auto;">privacy &amp; data</button>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
